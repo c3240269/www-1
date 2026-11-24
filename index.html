@@ -155,7 +155,40 @@ function openTripFormModal(tripId){
     </div>
   </div>`;
   document.getElementById('tf-cancel').onclick = ()=> root.innerHTML='';
-  document.getElementById('modal-overlay').addEventListener('click', (e)=>{ if(e.target.id==='modal-overlay') root.innerHTML=''; });
+    // 開始日の翌日を取得する
+  function getNextDay(dateString) {
+    if (!dateString) return '';
+
+    const [year, month, day] = dateString.split('-').map(Number);
+    const date = new Date(year, month - 1, day + 1);
+
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+
+    return `${y}-${m}-${d}`;
+  }
+
+  // 終了日の選択可能範囲を設定する
+  function updateEndDateLimit() {
+    const startDate = document.getElementById('tf-start').value;
+    const endInput = document.getElementById('tf-end');
+
+    if (!startDate) {
+      endInput.removeAttribute('min');
+      return;
+    }
+
+    const minEndDate = getNextDay(startDate);
+    endInput.min = minEndDate;
+    if (endInput.value && endInput.value < minEndDate) {
+      endInput.value = '';
+    }
+  }
+
+  document.getElementById('tf-start').addEventListener('change', updateEndDateLimit);
+  updateEndDateLimit();
+   document.getElementById('modal-overlay').addEventListener('click', (e)=>{ if(e.target.id==='modal-overlay') root.innerHTML=''; });
   document.getElementById('tf-save').onclick = ()=>{
     const title = document.getElementById('tf-title').value.trim();
     const departure = document.getElementById('tf-departure').value.trim();
@@ -165,6 +198,10 @@ function openTripFormModal(tripId){
     if(!title || !departure || !destination || !startDate || !endDate){
       showToast('すべての項目を入力してください'); return;
     }
+     if(endDate <= startDate){
+  showToast('終了日は開始日の翌日以降に設定してください');
+  return;
+}
     if(trip){
       Object.assign(trip, { title, departure, destination, startDate, endDate });
     } else {
