@@ -145,8 +145,9 @@ function openTripFormModal(tripId){
       </div>
       <div class="grid2">
         <div class="field"><label>開始日 *</label><input type="date" id="tf-start" value="${trip?trip.startDate:''}"></div>
-        <div class="field"><label>終了日 *</label><input type="date" id="tf-end" value="${trip?trip.endDate:''}"></div>
-      </div>
+        <div class="field"><label>終了日 *</label><input type="date" id="tf-end"value="${trip?.endDate || ''}">
+  <small class="muted">開始日の翌日以降を選択してください。</small>
+</div>
       <div class="btn-row">
         <button class="btn accent" id="tf-save">保存</button>
         <button class="btn secondary" id="tf-cancel">キャンセル</button>
