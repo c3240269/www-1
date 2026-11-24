@@ -68,7 +68,42 @@ function renderMembersTab(trip){
   </div>`;
 }
 function bindMembersTab(trip){
-  document.getElementById('round-unit').value = String(trip.roundingUnit);
+
+  // 自分の参加者情報を保存
+  const saveMyProfileButton =
+    document.getElementById('btn-save-my-profile');
+
+  if(saveMyProfileButton){
+    saveMyProfileButton.onclick = () => {
+      const myMember = trip.members.find(
+        m => m.id === state.currentUserId
+      );
+
+      if(!myMember){
+        showToast('自分の参加者情報が見つかりません');
+        return;
+      }
+
+      const role = document.getElementById('my-role').value;
+      const drink = document.getElementById('my-drink').value;
+      const smoke = document.getElementById('my-smoke').value;
+
+      if(drink === '' || smoke === ''){
+        showToast('飲酒・喫煙の情報を選択してください');
+        return;
+      }
+
+      myMember.role = role;
+      myMember.drink = drink === 'true';
+      myMember.smoke = smoke === 'true';
+
+      rerenderPage();
+      showToast('自分の参加者情報を保存しました');
+    };
+  }
+
+  document.getElementById('round-unit').value =
+    String(trip.roundingUnit);
   document.getElementById('round-method').value = trip.roundingMethod;
   document.getElementById('btn-save-rounding').onclick = ()=>{
     trip.roundingUnit = Number(document.getElementById('round-unit').value);
