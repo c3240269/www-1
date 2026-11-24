@@ -170,7 +170,12 @@ function openTripFormModal(tripId){
       state.trips.unshift({
         id: uid('trip'), title, departure, destination, startDate, endDate,
         roundingUnit: 1, roundingMethod: 'random',
-        members: [{ id: state.currentUserId, name: state.profile.name, owner:true }],
+        members: [{
+  id: state.currentUserId,
+  name: state.profile.name,
+  owner: true,
+  ...createMemberProfile(state.profile)
+}],
         estimate: { transport:0, lodging:0, food:0, sightseeing:0, souvenir:0, other:0 },
         expenses: [],
         settlements: [],
